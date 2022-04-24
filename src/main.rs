@@ -12,7 +12,7 @@ use glutin::{
 use luminance::{
     pipeline::{PipelineState, Viewport},
     render_state::RenderState,
-    shader::Uniform,
+    shader::{types::Vec2, Uniform},
     UniformInterface, Vertex,
 };
 use luminance_derive::Semantics;
@@ -43,6 +43,7 @@ struct Vertex {
 #[derive(Debug, UniformInterface)]
 struct ShaderInterface {
     time: Uniform<f32>,
+    resolution: Uniform<Vec2<f32>>,
 }
 
 const QUAD_VERTICES: [Vertex; 4] = [
@@ -178,6 +179,7 @@ fn main() -> anyhow::Result<()> {
                         |_, mut shd_gate| {
                             shd_gate.shade(program, |mut iface, uni, mut rdr_gate| {
                                 iface.set(&uni.time, start.elapsed().as_secs_f32());
+                                iface.set(&uni.resolution, Vec2::new(width as f32, height as f32));
 
                                 rdr_gate.render(&RenderState::default(), |mut tess_gate| {
                                     tess_gate.render(&quad)
